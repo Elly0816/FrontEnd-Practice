@@ -1,83 +1,71 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-const getColor: () => Promise<unknown> = async () => {
-    return await fetch('https://www.colr.org/json/colors/random/7').then(
-        (res) => res.json()
-    );
+const getColor: () => string = () => {
+    const options = [
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
+    ];
+    console.log('getting colors');
+    const color = new Array(6)
+        .fill('')
+        .map(() => options[Math.floor(Math.random() * options.length)])
+        .join('');
+    // return `#${color}`;
+    return color;
 };
 
 function App() {
     const [hexCodes, setHexCodes] = useState<string[]>();
-    const [otherOptions, setOtherOptions] = useState<string[]>();
     const [selectedColor, setSelectedColor] = useState<string>();
-    const [fetchNewColors, setFetchNewColors] = useState<boolean>(true);
     const [result, setResult] = useState<'correct' | 'wrong' | undefined>();
 
-    useEffect(() => {
-        if (fetchNewColors) {
-            getColor()
-                .then(async (res) => {
-                    const result = res as { colors: { hex: string }[] };
-                    const colors = result.colors;
-                    console.log('Colors: ', colors);
-                    const codes = colors
-                        .map((color) => color?.hex)
-                        .filter((hex) => hex.length > 0);
-                    setHexCodes(codes);
-                })
-                .then(() => {
-                    setFetchNewColors(false);
-                    setResult(undefined);
-                });
+    const getColors: () => void = () => {
+        const colors: Array<string | undefined> = [];
+        for (let i = 0; i < 3; i++) {
+            colors.push(getColor());
         }
-    }, [fetchNewColors]);
-
-    const pickRandomColor: (array: string[], count: number) => void = (
-        array,
-        count
-    ) => {
-        if (count >= array.length) {
-            throw new Error('Count should be less than the array length');
-        }
-
-        const shuffledArray = array.slice(); // Create a copy of the array
-        for (let i = shuffledArray.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledArray[i], shuffledArray[j]] = [
-                shuffledArray[j],
-                shuffledArray[i],
-            ];
-        }
-
-        // return shuffledArray.slice(0, count);
-        const selectedColor = shuffledArray.slice(0, count)[
-            Math.floor(Math.random() * count)
-        ];
-        const otherOptions = shuffledArray.slice(0, count);
-
-        setSelectedColor(selectedColor);
-        setOtherOptions(otherOptions);
+        setHexCodes(colors as string[]);
+        const pickedColor = colors[Math.floor(Math.random() * colors.length)];
+        setSelectedColor(pickedColor);
     };
 
     useEffect(() => {
-        if (hexCodes) {
-            pickRandomColor(hexCodes, 3);
-        }
-    }, [hexCodes]);
+        getColors();
+    }, []);
 
     const checkAnswer = (color: string) => {
+        setResult(undefined);
         if (color == selectedColor) {
             console.log('Correct Answer');
             setResult('correct');
-            setTimeout(() => {
-                setFetchNewColors(true);
-            }, 2000);
+            const timer = setTimeout(() => {
+                setResult(undefined);
+                getColors();
+                clearTimeout(timer);
+            }, 1000);
         } else {
             console.log('Wrong Answer');
+
             setResult('wrong');
-            setTimeout(() => {
+
+            const timer = setTimeout(() => {
                 setResult(undefined);
+                clearTimeout(timer);
             }, 2000);
         }
     };
@@ -89,17 +77,17 @@ function App() {
                     <section
                         className="colorContainer"
                         style={{ backgroundColor: `#${selectedColor}` }}
-                    ></section>
-                    {otherOptions?.map((option, index) => (
+                    >
+                        {selectedColor}
+                    </section>
+                    {hexCodes?.map((option, index) => (
                         <button
                             style={{
                                 marginRight:
-                                    index !== otherOptions.length - 1
-                                        ? '20px'
-                                        : 0,
+                                    index !== hexCodes.length - 1 ? '20px' : 0,
                             }}
                             type="button"
-                            disabled={result == 'correct'}
+                            disabled={result == 'correct' || !hexCodes}
                             key={option + index}
                             onClick={() => {
                                 checkAnswer(option);
@@ -127,9 +115,6 @@ function App() {
                     </p>
                 </div>
             )}
-            {/* <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p> */}
         </>
     );
 }

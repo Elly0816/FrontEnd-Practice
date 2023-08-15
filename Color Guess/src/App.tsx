@@ -78,7 +78,7 @@ function App() {
                         className="colorContainer"
                         style={{ backgroundColor: `#${selectedColor}` }}
                     >
-                        {selectedColor}
+                        {/* {selectedColor} */}
                     </section>
                     {hexCodes?.map((option, index) => (
                         <button

@@ -25,7 +25,6 @@ const getColor: () => string = () => {
         .fill('')
         .map(() => options[Math.floor(Math.random() * options.length)])
         .join('');
-    // return `#${color}`;
     return color;
 };
 

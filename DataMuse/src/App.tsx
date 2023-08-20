@@ -1,33 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+
+const URL = 'https://api.datamuse.com/words?rel_syn'
+
+
+const App: React.FC = () =>  {
+  const [word, setWord] = useState<string|undefined>("")
+  const [synonym, setSynonym] = useState<string|undefined>("")
+
+
+  const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    console.log(value);
+    setWord(value)
+  }
+
+  const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(word);
+
+    const fullURL = URL+`=${word}`;
+
+    try {
+      const response = await fetch(fullURL);
+      const data = await response.json() as {word:string, person:number}[];
+      setWord('');
+      console.log(data);
+      setSynonym(data[0].word)
+
+    } catch (e) {
+      console.log(e);
+    }
+
+  }
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <form onSubmit={(e) =>  handleSubmit(e)}>
+          <input placeholder='enter a word' type="text"  value={word} onChange={(e) => handleChange(e)}/>
+          <input type="submit"  value='search'/>
+        </form>
+
+        {synonym && <p>{synonym}</p>}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }

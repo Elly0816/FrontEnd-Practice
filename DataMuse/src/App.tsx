@@ -52,10 +52,15 @@ const App: React.FC = () =>  {
       }
 
     } catch (err) {
-      const error = err as {message:string}
+      const error = err as Error;
       //console.log(error.message);
-      setError(error.message);
-      setSynonym("");
+      if (!error){
+          setError('Something went wrong 🫤');
+      } else {
+
+        setError(error.message);
+        setSynonym("");
+      }
     }
   }
     
@@ -64,12 +69,12 @@ const App: React.FC = () =>  {
   return (
     <>
       <div>
-        <form onSubmit={(e) =>  handleSubmit(e)}>
+        <form id='form' data-testid= 'form' onSubmit={(e) =>  handleSubmit(e)}>
           <input placeholder='enter a word' type="text"  value={word} onChange={(e) => handleChange(e)}/>
           <input type="submit"  value='search'/>
         </form>
-        {error && <p>{error}</p>}
-        {synonym && <p>{synonym}</p>}
+        {error && <p data-testid='error' id='error'>{error}</p>}
+        {synonym && <p data-testid='result' id='result'>{synonym}</p>}
       </div>
     </>
   )

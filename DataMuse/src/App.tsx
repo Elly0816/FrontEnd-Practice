@@ -14,7 +14,7 @@ const App: React.FC = () =>  {
   
   const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    console.log(value);
+    //console.log(value);
     setWord(value)
   }
   
@@ -28,7 +28,7 @@ const App: React.FC = () =>  {
       .then((val) => setSynonym(val as string))
       .catch((err) => setError(err.message))
 
-      console.log(word);
+      //console.log(word);
     
   }
     
@@ -56,28 +56,28 @@ export default App
       
     try {
     const response = await fetch(fullURL);
-    console.log(response)
+    //console.log(response)
     if (!response.ok){
         throw new Error('There was an error with the response');
         // setError('There was an error with the response')
     } else {
 
       const data = await response.json();
-      console.log(data)
+      //console.log(data)
       if (!data){
         throw new Error("There was an error");
       } else {
 
         // as {word:string, person:number}[]
         // setWord('');
-        console.log(data.length);
+        //console.log(data.length);
         if (data.length > 0){
           // setSynonym(data[0].word)
           return data[0].word;
         } else {
           // setSynonym("No Synonyms were found");
 
-          console.log( "No Synonyms were found");
+          //console.log( "No Synonyms were found");
           return "No Synonyms were found";
         }
         // setError("");
@@ -86,7 +86,7 @@ export default App
 
   } catch (err) {
     const error = err as Error;
-    console.log(error.message);
+    //console.log(error.message);
     if (!error){
         return Promise.reject('Something went wrong 🫤');
     } else {

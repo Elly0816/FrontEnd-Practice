@@ -20,7 +20,7 @@ const getColor: () => string = () => {
         'E',
         'F',
     ];
-    console.log('getting colors');
+    //console.log('getting colors');
     const color = new Array(6)
         .fill('')
         .map(() => options[Math.floor(Math.random() * options.length)])
@@ -50,7 +50,7 @@ function App() {
     const checkAnswer = (color: string) => {
         setResult(undefined);
         if (color == selectedColor) {
-            console.log('Correct Answer');
+            //console.log('Correct Answer');
             setResult('correct');
             const timer = setTimeout(() => {
                 setResult(undefined);
@@ -58,7 +58,7 @@ function App() {
                 clearTimeout(timer);
             }, 1000);
         } else {
-            console.log('Wrong Answer');
+            //console.log('Wrong Answer');
 
             setResult('wrong');
 

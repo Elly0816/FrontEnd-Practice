@@ -3,7 +3,8 @@ import { render,
     //  fireEvent, waitFor,
       screen, 
       } from '@testing-library/react';
-import App, {getSynonym} from './App';
+import App from './App';
+import { getSynonym } from './api/getSynonyms';
 
 //Mocking the fetch funtion
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import styles from '../styles.module.css';
 
+//This components displays each split in the splits array that's passed in as a prop
 const Splits = (props) => {
   const splitsRef = useRef(null);
   useEffect(() => {

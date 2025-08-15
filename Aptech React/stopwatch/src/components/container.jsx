@@ -11,7 +11,16 @@ import {
 } from '../utils';
 import Splits from './splits';
 
+/**
+ *
+ * @param {*} props
+ * @returns jsx
+ */
+
+// NOTE: ms is actually centiseconds (cs). But we'll leave it as ms
+
 const Container = (props) => {
+  //Sets initial values
   const [time, setTime] = useState({
     hours: 0,
     minutes: 0,
@@ -27,14 +36,15 @@ const Container = (props) => {
   const [startTimeMilliSeconds, setStartTimeMilliSeconds] = useState(undefined);
   const [currentPlayPause, setCurrentPlayPause] = useState(CONSTANTS.PLAY);
   const [isCounting, setIsCounting] = useState(false);
-  // const counter = useRef();
-  const animationFrame = useRef();
   const [currentTimerActive, setCurrentTimerActive] = useState(false);
   const [durationPaused, setDurationPaused] = useState(0);
   const [timePaused, setTimePaused] = useState(undefined);
+  // This hold the animatinFrame as a reference
+  // const counter = useRef();
+  const animationFrame = useRef();
 
   useEffect(() => {
-    // let animationFrame;
+    // This function handles updating the time state and any other state that it would depend on
     const update = () => {
       if (isCounting) {
         if (props.mode === CONSTANTS.STOPWATCH) {
@@ -53,12 +63,14 @@ const Container = (props) => {
           }));
         } else if (props.mode === CONSTANTS.TIMER) {
           //Implement timer mode
+          //Convert input to milliseconds
           const totalMilliseconds = fromTimeFormatToMilliSeconds(
             timeInput.hours,
             timeInput.minutes,
             timeInput.seconds,
             timeInput.milliSeconds
           );
+
           const timeDiff = performance.now() - startTimeMilliSeconds - durationPaused;
 
           const milliSecondsSet = fromTimeFormatToMilliSeconds(
@@ -69,6 +81,8 @@ const Container = (props) => {
           );
           // console.log('milliseconds set: ' + milliSecondsSet);
           // console.log('Time diff: ' + timeDiff);
+
+          // Convert to format that the time is shown in
           const formattedTime = fromMilliToFormattedTime(milliSecondsSet - timeDiff);
           setTime((time) => ({
             ...time,
@@ -78,14 +92,16 @@ const Container = (props) => {
             milliSeconds: formattedTime.milliSecondsRemaining,
           }));
           if (totalMilliseconds - timeDiff <= 0) {
+            //TImer is done and the current time shown is 00:00:00:00
             animationFrame.current = requestAnimationFrame(() => resetFunc(true));
             return;
           }
         }
       }
-
+      // recursively runs the update function on every frame
       animationFrame.current = requestAnimationFrame(update);
     };
+    //runs the update function on every frame
     animationFrame.current = requestAnimationFrame(update);
     return () => cancelAnimationFrame(animationFrame.current);
   }, [isCounting, props.mode]);
@@ -183,6 +199,7 @@ const Container = (props) => {
   ];
 
   const handleChange = (value, nameInput) => {
+    //This handles the controlled time input in timer mode
     // setTimeInput();
 
     const name = nameInput.toLowerCase().includes('milli') ? 'milliSeconds' : nameInput.toLowerCase();

@@ -1,4 +1,5 @@
 export const showFormattedTime = (hours, minutes, seconds, milliSeconds) => {
+  //Returns time in usable format
   const hh = String(hours).padStart(2, 0);
   const mins = String(minutes).padStart(2, 0);
   const sec = String(seconds).padStart(2, 0);
@@ -7,9 +8,10 @@ export const showFormattedTime = (hours, minutes, seconds, milliSeconds) => {
   return `${hh}:${mins}:${sec}:${ms}`;
 };
 
-export const allZero = (obj) => Object.values(obj).every((v) => v == 0);
+export const allZero = (obj) => Object.values(obj).every((v) => v == 0); // Checks all values in an object are zero
 
 export const fromMilliToFormattedTime = (milliSeconds) => {
+  //Converts time to usable format
   let milliSecondsRemaining;
   const hours = Math.floor(milliSeconds / (1000 * 60 * 60));
   milliSecondsRemaining = milliSeconds % (1000 * 60 * 60);
